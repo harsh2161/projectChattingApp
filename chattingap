@@ -1,0 +1,126 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+bool checkUserExist(string); 
+void callTheNewSignInFunction();
+void callTheLoginPage();
+void successfullyLogIn();
+
+map<string,vector<string>> usersOfApp;
+
+class User{
+	string username;
+	string name;
+	string email;
+	string password;
+	map<string,string> following;
+	map<string,string> followers;
+	map<string,vector<string>> messages;
+	vector<string> myFeed;
+	public:
+		User(string getname,string getusername,string getemail,string getpassword){
+			name = getname;
+			username = getusername;
+			email = getemail;
+			password = getpassword;
+		}
+};
+
+bool checkUserExist(string newUsername){
+	if(usersOfApp.find(newUsername) != usersOfApp.end()){
+		return true;
+	}
+	return false;
+}
+
+void callTheNewSignInFunction(){
+	cout<<"Welcome To New User Page"<<endl;
+	string newName,newEmail,newUsername,newPassword;
+	cout<<"Enter Name , username , email , password.\n";
+	cin>>newName;
+	cin>>newUsername;
+	cin>>newEmail;
+	cin>>newPassword;
+	if(!checkUserExist(newUsername)){
+		vector<string> fetchData;
+		fetchData.push_back(newName);
+		fetchData.push_back(newEmail);
+		fetchData.push_back(newPassword);
+		usersOfApp.insert({newUsername, fetchData});
+
+		User creatingUserObject = User(newName,newUsername,newEmail,newPassword);
+		cout<<"User successfully Registered\nPress 1 to register new User Press 2 or else to Login";
+		int n;
+		cin>>n;
+		if(n == 1){
+			callTheNewSignInFunction();
+			return;
+		}else {
+			callTheLoginPage();
+			return;
+		}
+	}else{
+		cout<<"This Username Already Exist\nPress 0 to go back To Login Page\nPress 1 or any key to enter diff username";
+		int n;
+		cin>>n;
+		if(n == 0){
+			return;
+		}else{
+			callTheNewSignInFunction();
+		}
+	}
+	return;
+}
+
+void callTheLoginPage(){
+	cout<<"Welcome To Login Page"<<endl;
+	string loginUserName,loginPassword;
+	cin>>loginUserName;
+	cin>>loginPassword;
+	if(checkUserExist(loginUserName)){
+		vector<string> fetchDetails = usersOfApp[loginUserName];
+		if(fetchDetails[2] == loginPassword){
+			successfullyLogIn();
+		}else{
+			cout<<"Sorry Password is Wrong Try Again\n";
+			callTheLoginPage();
+		}
+	}else{
+		cout<<"User Dont Exist Sorry\nPress 0 to create your account";
+		int n;
+		cin>>n;
+		if(n==0){
+			callTheNewSignInFunction();
+		}else{
+			callTheLoginPage();
+		}
+	}
+	return;
+}
+
+void successfullyLogIn(){
+	cout<<"Welcome User You Are successfully Login\nPress 1 To Check My Follwers\nPress 2 To Check My Following\nPress 3 to check my message\npress 3 my feed";
+	int n;
+	cin>>n;
+	if(n==1){
+		cout<<"Sorry No One Follows You"<<endl;
+	}else if(n==2){
+		cout<<"Sorry No One You You are following"<<endl;
+	}else if(n==3){
+		cout<<"No One message you yet"<<endl;
+	}else if(n==4){
+		cout<<"No fed yet"<<endl;
+	}
+	return;
+}
+
+int main(){
+	cout<<"Welcome To Mini Chatting App\nLogin Page\nPress 1 New User\nPress 2 Old User"<<endl;
+	int pressed;
+	cin>>pressed;
+	if(pressed == 1){
+		callTheNewSignInFunction();
+	}else if(pressed ==2){
+		callTheLoginPage();
+	}
+}
